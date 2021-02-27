@@ -1,6 +1,5 @@
 # Screen-recording
 python GUI based screen recording tool using html, css &amp; javascript;
-# Working Button : record,pause,resume,stop
 toggle button : pause right,resume left.
 
 
