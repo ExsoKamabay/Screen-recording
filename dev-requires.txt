@@ -1,0 +1,2 @@
+pyscreenrec==0.2
+pywebview==3.4

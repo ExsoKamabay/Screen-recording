@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav();">&#9754;</a>
+    <a href="#">&#127908;</a>
+    <a href="#">&#127916;</a>
+    <a href="#">&#x2728;</a>
+    <a href="#">&#x1F3C2;</a>
+</div>
+<form method="POST" class="box">
+    <span style="font-size:30px;cursor:pointer" onclick="openNav();" class="shownav">&#9763;</span>
+    <span class="ab" id="box-rec"><span class="a" id="record">record</span><span class="b" id="led1"></span></span>
+    <span class="ab" id="box-pause"><span class="a" id="pause">pause</span><span class="b" id="led2"></span></span>
+    <span class="ab" id="box-stop"><span class="a" id="stop">stop</span><span class="b" id="led3"></span></span>
+</form>
+<div class="opt">
+  <span class="box-fileName" id="box-fileName">
+    <label for="nameFile">file name : </label>
+    <input type="text" id="nameFile" class="nameFile" name="fileName">
+    <button type="button" id="getName" class="nameFile">save</button>
+  </span>
+</div>
+<script>
+    const style = document.getElementById('mySidenav');
+    const record = document.getElementById('record');
+    const paused = document.getElementById('pause');
+    const stoped = document.getElementById('stop');
+    const button = document.getElementById("getName");
+    button.addEventListener("click",()=>{
+      const uname = document.getElementById("nameFile");
+      if(uname.value === ""){
+              uname.style.border = "2px solid cyan";
+              uname.style.backgroundColor = "red";
+              setTimeout(()=>{
+                uname.style.backgroundColor = "antiquewhite";
+              },200);
+          }else{
+              setTimeout(function(){
+                document.getElementById("box-fileName").style.display = "none";}
+                ,500);
+                pywebview.api.recording(uname.value);
+          };
+    });
+    function openNav(){
+      style.style.width = '230px';
+      style.style.borderTopRightRadius = '50px';
+      style.style.borderRight = '3px solid green';
+    };
+    function closeNav(){
+      style.style.width = '0px';
+      style.style.border = '0px';
+    };
+    record.addEventListener('click',function(){
+      const boxName = document.getElementById("box-fileName");
+      const input = document.getElementById("nameFile");
+      boxName.style.display = "flex";
+      input.addEventListener("keyup",function(e){
+      if(e.keyCode === 13){
+          if(input.value === ""){
+              input.style.border = "2px solid cyan";
+              input.style.backgroundColor = "red";
+              setTimeout(()=>{
+                input.style.backgroundColor = "antiquewhite";
+              },200);
+          }else{
+              setTimeout(function(){
+                document.getElementById("box-fileName").style.display = "none";}
+                ,1000);
+                const inputName = document.getElementById("nameFile");
+                pywebview.api.recording(inputName.value);
+                document.getElementById('box-rec').classList.add('box-rec');
+                document.getElementById('led1').classList.add('record');
+            };
+          };
+        });
+    });
+    paused.addEventListener('click',function(){
+      const check1 = document.getElementById('led1');
+      if(check1.className === "b record"){
+        document.getElementById('box-pause').classList.toggle('box-rec');
+        document.getElementById('led2').classList.toggle('record');
+        if(document.getElementById("pause").innerHTML === "pause"){
+          document.getElementById("pause").innerHTML = "resume";
+          document.getElementById("pause").classList.add("pause-resume");
+          pywebview.api.pauseRecord();
+        }else{
+          document.getElementById("pause").innerHTML = "pause";
+          document.getElementById("pause").classList.remove("pause-resume");
+          pywebview.api.resumeRecord();
+        }
+      }
+    });
+    stoped.addEventListener('click',function(){
+      const checkled1 = document.getElementById("led1");
+      const checkled2 = document.getElementById("led2");
+      if(checkled1.className === "b record" || checkled2.className === "b record"){
+        checkled1.classList.replace('record','stop');
+        checkled2.classList.replace('record','stop');
+        document.getElementById('box-rec').classList.remove('box-rec');
+        document.getElementById('box-pause').classList.remove('box-rec');
+        document.getElementById('box-stop').classList.add('box-rec');
+        document.getElementById("pause").classList.remove("pause-resume");
+        document.getElementById('led3').classList.add('stop');
+        setTimeout(function(){
+            document.getElementById('box-stop').classList.remove('box-rec');
+            document.getElementById('led1').classList.remove('stop');
+            document.getElementById('led2').classList.remove('stop');
+            document.getElementById('led3').classList.remove('stop');
+            pywebview.api.stopRecord();
+        },500);
+      };
+    });
+</script>
+</body>
+</html>
